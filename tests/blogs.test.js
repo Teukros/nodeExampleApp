@@ -4,7 +4,7 @@ let page;
 
 beforeEach(async () => {
     page = await Page.build();
-    await page.goto('localhost:3000');
+    await page.goto('http://localhost:3000');
 });
 
 afterEach(async () => {
@@ -79,6 +79,18 @@ describe("user is not logged in", async () => {
                 .then(res => res.json());
         });
         expect(result).toEqual({error: "You must log in!"})
+    })
+    test('User cannot get a list of posts', async () => {
+        const result = await page.evaluate(() => {
+            return fetch('api/blogs', {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res=> res.json());
+        });
+        expect(result).toEqual({error: "You must log in!"});
     })
 });
 
